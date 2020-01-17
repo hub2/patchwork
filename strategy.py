@@ -19,8 +19,8 @@ class RandomStrategy(Strategy):
         move_to_do = random.choice([PickAndPlaceMove, JumpMove])
         available_pieces = state.map.available_pieces()
         affordable_pieces = [piece for piece in available_pieces if piece.price <= state.current_board.buttons]
-
-        if isinstance(move_to_do, PickAndPlaceMove) and len(affordable_pieces) > 0:
+        print(affordable_pieces)
+        if PickAndPlaceMove == move_to_do and len(affordable_pieces) > 0:
             for i in range(10000):
                 piece = random.choice(affordable_pieces)
                 rotation = random.randrange(0, 4)
@@ -29,8 +29,9 @@ class RandomStrategy(Strategy):
                 position_y = random.randrange(0, BOARD_SIZE)
                 position = (position_x, position_y)
 
-                x, y = np.where(state.current_board == 0)
-                i = random.randint(len(x))
+                x, y = np.where(state.current_board.board == 0)
+
+                i = random.randrange(0, len(x))
                 extra_fabric_random = (x[i], x[i])
 
                 move_to_be_made = PickAndPlaceMove(piece=piece, rotation=rotation, position=position,

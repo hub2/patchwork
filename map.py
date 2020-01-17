@@ -13,28 +13,34 @@ class Map:
         self.player2_offset = player2_offset
         self.pointer_offset = pointer_offset
         if not pieces:
-            self.pieces = pieces_types
+            self.pieces = pieces_types[:]
             starting_piece = self.pieces[0]
             random.shuffle(self.pieces)
             self.pointer_offset = self.pieces.index(starting_piece)
 
     def get_further_player(self, player1: Board, player2: Board) -> Board:
-        # TODO: what if they overlap
+        if self.player1_offset == self.player2_offset:
+            return None
         if self.player1_offset < self.player2_offset:
             return player1
         else:
             return player2
 
     def available_pieces(self) -> list:
-        return self.pieces[self.pointer_offset:self.pointer_offset+3]
+        end = self.pointer_offset+3 % len(self.pieces)
+        if end < self.pointer_offset:
+            return self.pieces[self.pointer_offset:] + self.pieces[:end]
+        else:
+            return self.pieces[self.pointer_offset:end]
 
     def show(self):
         print("Pieces:")
         for idx, piece in enumerate(self.pieces):
             if idx == self.pointer_offset:
-                print("==POINTER==")
+                print("==POINTER==", end="")
             print(piece.name, end=" ")
         print("")
 
         print("Player 1 is at {self.player1_offset}")
         print("Player 2 is at {self.player2_offset}")
+

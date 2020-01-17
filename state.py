@@ -1,6 +1,5 @@
 from map import Map
 from board import Board
-from move import Move
 
 
 class State:
@@ -11,12 +10,15 @@ class State:
         self.p2board = p2board
 
     def get_further_player(self):
-        return self.map.get_further_player(self.p1board, self.p2board)
+        player = self.map.get_further_player(self.p1board, self.p2board)
+        if not player:
+            return self.current_board
+        return player
 
-    def apply(self, move: Move):
+    def apply(self, move: "Move"):
         return move.apply(self)
 
-    def verify(self, move: Move):
+    def verify(self, move: "Move"):
         return move.verify(self)
 
     def show(self):
@@ -27,6 +29,8 @@ class State:
 
         self.map.show()
 
+        print("Player 1 board")
         self.p1board.show()
+        print("Player 2 board")
         self.p2board.show()
 

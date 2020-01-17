@@ -1,6 +1,5 @@
 from consts import BOARD_SIZE, STARTING_BUTTONS
 import numpy as np
-from move import Move
 
 
 class Board:
@@ -9,3 +8,5 @@ class Board:
         self.board = np.zeros((self.size, self.size))
         self.buttons = STARTING_BUTTONS
 
+    def show(self):
+        print(self.board)

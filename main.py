@@ -1,8 +1,9 @@
 from board import Board
 from map import Map
 from state import State
+import numpy as np
 from strategy import Strategy, RandomStrategy
-
+import sys
 
 class Game:
     def __init__(self, strategy1: Strategy, strategy2: Strategy):
@@ -32,11 +33,13 @@ class Game:
             if self.state.map.player1_offset >= self.state.map.length and \
                     self.state.map.player2_offset >= self.state.map.length:
                 self.is_live = False
+        print("{}".format(np.sum(self.state.p1board.board)+np.sum(self.state.p2board.board)), file=sys.stderr)
 
 
 def main():
-    g = Game(RandomStrategy(), RandomStrategy())
-    g.run()
+    for i in range(100):
+        g = Game(RandomStrategy(), RandomStrategy())
+        g.run()
 
 
 if __name__ == '__main__':

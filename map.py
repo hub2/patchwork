@@ -3,7 +3,7 @@ from pieces import pieces_types
 from board import Board
 import random
 
-random.seed(1)
+#random.seed(1)
 
 
 class Map:
@@ -16,7 +16,7 @@ class Map:
             self.pieces = pieces_types[:]
             starting_piece = self.pieces[0]
             random.shuffle(self.pieces)
-            self.pointer_offset = self.pieces.index(starting_piece)
+            self.pointer_offset = self.pieces.index(starting_piece) + 1
 
     def get_further_player(self, player1: Board, player2: Board) -> Board:
         if self.player1_offset == self.player2_offset:
@@ -27,7 +27,7 @@ class Map:
             return player2
 
     def available_pieces(self) -> list:
-        end = self.pointer_offset+3 % len(self.pieces)
+        end = (self.pointer_offset+3) % len(self.pieces)
         if end < self.pointer_offset:
             return self.pieces[self.pointer_offset:] + self.pieces[:end]
         else:

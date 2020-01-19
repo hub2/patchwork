@@ -18,17 +18,21 @@ class Move:
         buttons = sum(BUTTONS_PLACEMENT[start:end+1])
         fabrics = sum(SINGLE_FABRIC_PLACEMENT[start:end+1])
 
-        # TODO: award buttons
-        return buttons, fabrics
+        state.current_board.buttons += buttons*state.current_board.button_on_board
+
+        return fabrics
 
     def move_fields(self, state: State, how_much: int):
         board = state.current_board
         if board == state.p1board:
-            self.collect_bonuses(state, state.map.player1_offset, state.map.player1_offset+how_much)
+            fabric = self.collect_bonuses(state, state.map.player1_offset, state.map.player1_offset+how_much)
             state.map.player1_offset += how_much
+            return fabric
         else:
-            self.collect_bonuses(state, state.map.player2_offset, state.map.player2_offset+how_much)
+            fabric = self.collect_bonuses(state, state.map.player2_offset, state.map.player2_offset+how_much)
             state.map.player2_offset += how_much
+            return fabric
+        return None
 
 
 class PickAndPlaceMove(Move):
@@ -46,10 +50,12 @@ class PickAndPlaceMove(Move):
         pieces_names = [piece.name for piece in state.map.pieces]
         off = pieces_names.index(self.piece.name)
         state.map.pointer_offset = off
+        print("twojastara:{}".format(state.map.pointer_offset))
         del state.map.pieces[off]
 
         board.buttons -= self.piece.price
-        self.move_fields(state, self.piece.moves)
+        board.button_on_board += self.piece.buttons
+        fabric = self.move_fields(state, self.piece.moves)
 
         layout = np.rot90(self.piece.layout, k=-self.rotation)
 
@@ -63,7 +69,12 @@ class PickAndPlaceMove(Move):
                         raise ValueError("You can not put a piece there")
 
                     board.board[i, j] = 1
-        # TODO: handle collecting bonuses
+
+        if fabric:
+            #if state.current_board[self.extra_fabric_position] == 1:
+            #    raise ValueError("Cant put fabric here")
+            extra_x, extra_y = self.extra_fabric_position
+            state.current_board.board[extra_x, extra_y] = 1
 
     def verify(self, state: State) -> bool:
         board = state.current_board

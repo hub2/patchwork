@@ -1,5 +1,6 @@
 from map import Map
 from board import Board
+import json
 
 
 class State:
@@ -34,3 +35,10 @@ class State:
         print("Player 2 board")
         self.p2board.show()
 
+    def to_dict(self):
+        return {
+            "p1board": self.p1board.to_dict(),
+            "p2board": self.p2board.to_dict(),
+            "current_board": "p1board" if self.current_board == self.p1board else "p2board",
+            "map": self.map.to_dict()
+        }

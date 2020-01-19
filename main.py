@@ -12,9 +12,11 @@ class Game:
         self.strategy1 = strategy1
         self.strategy2 = strategy2
         self.is_live = False
+        self.history = []
 
     def run(self):
         self.is_live = True
+        self.history.append(self.state.to_dict())
 
         while self.is_live:
             print(f"Player1 offset: {self.state.map.player1_offset}")
@@ -26,8 +28,9 @@ class Game:
                 move = self.strategy1.get_move(self.state)
             else:
                 move = self.strategy2.get_move(self.state)
-            print(type(move))
+
             self.state.apply(move)
+            self.history.append(self.state.to_dict())
 
             if self.state.map.player1_offset >= self.state.map.length and \
                     self.state.map.player2_offset >= self.state.map.length:

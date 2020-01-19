@@ -5,7 +5,7 @@ from state import State
 from consts import BOARD_SIZE
 import random
 
-random.seed(1)
+#random.seed(1)
 
 
 class Strategy:

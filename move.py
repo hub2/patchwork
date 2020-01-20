@@ -18,7 +18,7 @@ class Move:
         buttons = sum(BUTTONS_PLACEMENT[start:end+1])
         fabrics = sum(SINGLE_FABRIC_PLACEMENT[start:end+1])
 
-        state.current_board.buttons += buttons*state.current_board.button_on_board
+        state.current_board.buttons += buttons*state.current_board.buttons_on_board
 
         return fabrics
 
@@ -32,14 +32,14 @@ class Move:
             fabric = self.collect_bonuses(state, state.map.player2_offset, state.map.player2_offset+how_much)
             state.map.player2_offset += how_much
             return fabric
-        return None
 
 
 class PickAndPlaceMove(Move):
-    def __init__(self, piece: Piece, position: tuple, rotation: int, extra_fabric_position: tuple=None):
+    def __init__(self, piece: Piece, position: tuple, rotation: int, flip: bool, extra_fabric_position: tuple=None):
         self.piece = piece
         self.position = position
         self.rotation = rotation
+        self.flip = flip
         self.extra_fabric_position = extra_fabric_position
 
     def apply(self, state: State):
@@ -54,10 +54,14 @@ class PickAndPlaceMove(Move):
         del state.map.pieces[off]
 
         board.buttons -= self.piece.price
-        board.button_on_board += self.piece.buttons
+        board.buttons_on_board += self.piece.buttons
         fabric = self.move_fields(state, self.piece.moves)
 
-        layout = np.rot90(self.piece.layout, k=-self.rotation)
+        layout = self.piece.layout.copy()
+        if self.flip:
+            layout = np.flip(layout)
+
+        layout = np.rot90(layout, k=-self.rotation)
 
         x, y = self.position
         width, height = layout.shape

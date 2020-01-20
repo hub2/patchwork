@@ -4,6 +4,8 @@ from state import State
 import numpy as np
 from strategy import Strategy, RandomStrategy
 import sys
+from pieces import pieces_types
+import json
 
 class Game:
     def __init__(self, strategy1: Strategy, strategy2: Strategy):
@@ -36,13 +38,23 @@ class Game:
             if self.state.map.player1_offset >= self.state.map.length and \
                     self.state.map.player2_offset >= self.state.map.length:
                 self.is_live = False
+        print(self.history)
         print("{}".format(np.sum(self.state.p1board.board)+np.sum(self.state.p2board.board)), file=sys.stderr)
+
+    def to_dict(self):
+        return {
+            "history": self.history,
+            "pieces_types": [piece.to_dict() for piece in pieces_types]
+        }
+
 
 
 def main():
-    for i in range(100):
-        g = Game(RandomStrategy(), RandomStrategy())
-        g.run()
+    g = Game(RandomStrategy(), RandomStrategy())
+    g.run()
+    game_json = json.dumps(g.to_dict())
+    with open("history.json", "w") as f:
+        f.write(game_json)
 
 
 if __name__ == '__main__':

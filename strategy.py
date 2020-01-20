@@ -24,6 +24,7 @@ class RandomStrategy(Strategy):
             for i in range(10000):
                 piece = random.choice(affordable_pieces)
                 rotation = random.randrange(0, 4)
+                flip = random.choice([True, False])
 
                 position_x = random.randrange(0, BOARD_SIZE)
                 position_y = random.randrange(0, BOARD_SIZE)
@@ -34,7 +35,7 @@ class RandomStrategy(Strategy):
                 i = random.randrange(0, len(x))
                 extra_fabric_random = (x[i], x[i])
 
-                move_to_be_made = PickAndPlaceMove(piece=piece, rotation=rotation, position=position,
+                move_to_be_made = PickAndPlaceMove(piece=piece, rotation=rotation, position=position, flip=flip,
                                                    extra_fabric_position=extra_fabric_random)
                 if state.verify(move_to_be_made):
                     return move_to_be_made

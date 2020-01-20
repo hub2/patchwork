@@ -1,11 +1,10 @@
 from map import Map
 from board import Board
-import json
-
+import copy
 
 class State:
     def __init__(self, map: Map, p1board: Board, p2board: Board):
-        self.map = map
+        self.map: Map = map
         self.current_board = p1board
         self.p1board = p1board
         self.p2board = p2board
@@ -34,6 +33,18 @@ class State:
         self.p1board.show()
         print("Player 2 board")
         self.p2board.show()
+
+    def copy(self):
+        new_p1_board = self.p1board.copy()
+        new_p2_board = self.p2board.copy()
+        new_map = self.map.copy()
+
+        new_s = State(new_map, new_p1_board, new_p2_board)
+        if self.p1board == self.current_board:
+            new_s.current_board = new_p1_board
+        else:
+            new_s.current_board = new_p2_board
+        return new_s
 
     def to_dict(self):
         return {

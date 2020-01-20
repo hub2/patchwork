@@ -3,6 +3,7 @@ from pieces import pieces_types
 from board import Board
 from piece import Piece
 from typing import List
+from copy import deepcopy
 import random
 
 #random.seed(1)
@@ -43,8 +44,15 @@ class Map:
             print(piece.name, end=" ")
         print("")
 
-        print("Player 1 is at {self.player1_offset}")
-        print("Player 2 is at {self.player2_offset}")
+        print(f"Player 1 is at {self.player1_offset}")
+        print(f"Player 2 is at {self.player2_offset}")
+
+    def copy(self):
+        pieces = [piece.copy() for piece in self.pieces]
+        print(pieces)
+        new_m = Map(pieces, self.pointer_offset, self.player1_offset, self.player2_offset)
+        new_m.length = self.length
+        return new_m
 
     def to_dict(self):
         return {

@@ -19,3 +19,12 @@ class Board:
             "buttons": self.buttons,
             "buttons_on_board": self.buttons_on_board
         }
+
+    def copy(self):
+        new_b = Board()
+        new_b.size = self.size
+        new_b.board = np.copy(self.board)
+        new_b.buttons_on_board = self.buttons_on_board
+        new_b.buttons = self.buttons
+
+        return new_b

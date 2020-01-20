@@ -50,7 +50,6 @@ class PickAndPlaceMove(Move):
         pieces_names = [piece.name for piece in state.map.pieces]
         off = pieces_names.index(self.piece.name)
         state.map.pointer_offset = off
-        print("twojastara:{}".format(state.map.pointer_offset))
         del state.map.pieces[off]
 
         board.buttons -= self.piece.price
@@ -75,14 +74,18 @@ class PickAndPlaceMove(Move):
                     board.board[i, j] = 1
 
         if fabric:
-            #if state.current_board[self.extra_fabric_position] == 1:
-            #    raise ValueError("Cant put fabric here")
-            extra_x, extra_y = self.extra_fabric_position
-            state.current_board.board[extra_x, extra_y] = 1
+            if self.extra_fabric_position is None:
+                print("Warning: You have to define fabric position in this move!")
+            else:
+                if state.current_board[self.extra_fabric_position] == 1:
+                    raise ValueError("Cant put fabric here")
+                extra_x, extra_y = self.extra_fabric_position
+                state.current_board.board[extra_x, extra_y] = 1
 
     def verify(self, state: State) -> bool:
         board = state.current_board
         if board.buttons < self.piece.price:
+            print("biedak")
             return False
 
         layout = np.rot90(self.piece.layout, k=-self.rotation)
@@ -93,19 +96,25 @@ class PickAndPlaceMove(Move):
         right_boundary = x + width
         down_boundary = y + height
 
-        if right_boundary >= state.current_board.size:
-            #print("out of bounds width")
+        if right_boundary > state.current_board.size:
+            print("out of bounds width")
             return False
 
-        if down_boundary >= state.current_board.size:
-            #print("out of bounds height")
+        if down_boundary > state.current_board.size:
+            print("out of bounds height")
             return False
+
+        if self.extra_fabric_position:
+            extra_x, extra_y = self.extra_fabric_position
+            if board.board[extra_x, extra_y] == 1:
+                print("fabric")
+                return False
 
         for i_layout, i in enumerate(range(x, right_boundary)):
             for j_layout, j in enumerate(range(y, down_boundary)):
                 if layout[i_layout, j_layout] == 1:
                     if board.board[i, j] == 1:
-                        #print("overlap")
+                        print("overlap")
                         return False
 
         return True

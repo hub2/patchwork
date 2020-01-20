@@ -2,7 +2,7 @@ from board import Board
 from map import Map
 from state import State
 import numpy as np
-from strategy import Strategy, RandomStrategy
+from strategy import Strategy, RandomStrategy, EducatedRandomStrategy
 import sys
 from pieces import pieces_types
 import json
@@ -50,7 +50,8 @@ class Game:
 
 
 def main():
-    g = Game(RandomStrategy(), RandomStrategy())
+    #g = Game(RandomStrategy(), RandomStrategy())
+    g = Game(EducatedRandomStrategy(), EducatedRandomStrategy())
     g.run()
     game_json = json.dumps(g.to_dict())
     with open("history.json", "w") as f:

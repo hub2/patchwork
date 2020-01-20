@@ -2,7 +2,7 @@ import numpy as np
 
 
 class Piece:
-    def __init__(self, name, moves, price, buttons, layout):
+    def __init__(self, name, price, moves, buttons, layout):
         self.name = name
         self.moves = moves
         self.price = price
@@ -23,3 +23,6 @@ class Piece:
             "buttons": self.buttons,
             "layout": self.layout.tolist()
         }
+
+    def copy(self):
+        return Piece(self.name, self.moves, self.price, self.buttons, np.copy(self.layout))

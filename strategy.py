@@ -21,7 +21,7 @@ class RandomStrategy(Strategy):
         affordable_pieces = [piece for piece in available_pieces if piece.price <= state.current_board.buttons]
         print(affordable_pieces)
         if PickAndPlaceMove == move_to_do and len(affordable_pieces) > 0:
-            for i in range(10000):
+            for i in range(1000):
                 piece = random.choice(affordable_pieces)
                 rotation = random.randrange(0, 4)
                 flip = random.choice([True, False])
@@ -42,3 +42,11 @@ class RandomStrategy(Strategy):
             return JumpMove()
         else:
             return JumpMove()
+
+
+class EducatedRandomStrategy(Strategy):
+    def get_move(self, state: State) -> Move:
+        from helpers import available_moves
+
+        move_to_do = random.choice(available_moves(state))
+        return move_to_do

@@ -77,7 +77,7 @@ class PickAndPlaceMove(Move):
             if self.extra_fabric_position is None:
                 print("Warning: You have to define fabric position in this move!")
             else:
-                if state.current_board[self.extra_fabric_position] == 1:
+                if state.current_board.board[self.extra_fabric_position] == 1:
                     raise ValueError("Cant put fabric here")
                 extra_x, extra_y = self.extra_fabric_position
                 state.current_board.board[extra_x, extra_y] = 1

@@ -4,6 +4,7 @@ from board import Board
 from piece import Piece
 from typing import List
 from copy import deepcopy
+from consts import *
 import random
 
 #random.seed(1)
@@ -15,6 +16,8 @@ class Map:
         self.player1_offset = player1_offset
         self.player2_offset = player2_offset
         self.pointer_offset = pointer_offset
+        self.fabrics_left = MAX_FABRICS
+        self.pieces = pieces
         if not pieces:
             self.pieces = pieces_types[:]
             starting_piece = self.pieces[0]
@@ -48,9 +51,8 @@ class Map:
         print(f"Player 2 is at {self.player2_offset}")
 
     def copy(self):
-        pieces = [piece.copy() for piece in self.pieces]
-        print(pieces)
-        new_m = Map(pieces, self.pointer_offset, self.player1_offset, self.player2_offset)
+        #pieces = [piece.copy() for piece in self.pieces]
+        new_m = Map(self.pieces[:], self.pointer_offset, self.player1_offset, self.player2_offset)
         new_m.length = self.length
         return new_m
 
@@ -60,5 +62,6 @@ class Map:
             "player1_offset": self.player1_offset,
             "player2_offset": self.player2_offset,
             "pointer_offset": self.pointer_offset,
+            "fabrics_left": self.fabrics_left,
             "pieces": [piece.to_dict() for piece in self.pieces]
         }

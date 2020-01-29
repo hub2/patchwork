@@ -1,0 +1,66 @@
+body{
+    margin: 0;
+    padding: 10px;
+}
+
+#game-state{
+    position: absolute;
+}
+
+#game-container{
+    text-align: center;
+}
+#player1-board{
+    margin: 2px;
+    display: inline-block;
+    border: thick red solid;
+}
+#player2-board{
+    margin: 2px;
+    display: inline-block;
+    border: thick blue solid;
+}
+.row{
+    margin: 0px;
+    height: 85px;
+}
+
+.field{
+    display: inline-block;
+    width: 85px;
+    height: 85px;
+    border: black solid;
+}
+
+.field-empty{
+    background-color: white;
+}
+
+.field-occupied{
+    background-color: gray;
+}
+.player1{
+    background-color: red;
+}
+.player2{
+    background-color: blue;
+}
+.pointer{
+    background-color: brown;
+}
+.pawn{
+    height: inherit;
+    width: auto;
+}
+
+.pawn-mine:hover{
+    transform: scale(1.05);
+}
+
+.pawn-canvas{
+}
+
+.game-control-button{
+    position: absolute;
+    right: 0;
+}

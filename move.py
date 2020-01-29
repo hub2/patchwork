@@ -1,6 +1,7 @@
 from piece import Piece
 from state import State
-from consts import SINGLE_FABRIC_PLACEMENT, BUTTONS_PLACEMENT
+from consts import SINGLE_FABRIC_PLACEMENT, BUTTONS_PLACEMENT, BONUS_ARRAY
+from skimage.util import view_as_windows
 import numpy as np
 import abc
 
@@ -14,22 +15,29 @@ class Move:
     def verify(self, state: State):
         pass
 
-    def collect_bonuses(self, state: State, start: int, end: int) -> tuple:
-        buttons = sum(BUTTONS_PLACEMENT[start:end+1])
-        fabrics = sum(SINGLE_FABRIC_PLACEMENT[start:end+1])
+    @staticmethod
+    def collect_bonuses(state: State, start: int, end: int, apply_to_state=True) -> int:
+        buttons = sum(BUTTONS_PLACEMENT[start+1:end+1])
+        if state.map.fabrics_left > 0:
+            fabrics = sum(SINGLE_FABRIC_PLACEMENT[start+1:end+1])
+        else:
+            fabrics = 0
 
-        state.current_board.buttons += buttons*state.current_board.buttons_on_board
+        if apply_to_state:
+            state.current_board.buttons += buttons*state.current_board.buttons_on_board
+            if fabrics:
+                state.map.fabrics_left -= 1
 
         return fabrics
 
     def move_fields(self, state: State, how_much: int):
         board = state.current_board
         if board == state.p1board:
-            fabric = self.collect_bonuses(state, state.map.player1_offset, state.map.player1_offset+how_much)
+            fabric = Move.collect_bonuses(state, state.map.player1_offset, state.map.player1_offset+how_much)
             state.map.player1_offset += how_much
             return fabric
         else:
-            fabric = self.collect_bonuses(state, state.map.player2_offset, state.map.player2_offset+how_much)
+            fabric = Move.collect_bonuses(state, state.map.player2_offset, state.map.player2_offset+how_much)
             state.map.player2_offset += how_much
             return fabric
 
@@ -44,8 +52,8 @@ class PickAndPlaceMove(Move):
 
     def apply(self, state: State):
         board = state.current_board
-        if not self.verify(state):
-            raise ValueError("This move cannot be made")
+        #if not self.verify(state):
+        #    raise ValueError("This move cannot be made")
 
         pieces_names = [piece.name for piece in state.map.pieces]
         off = pieces_names.index(self.piece.name)
@@ -75,20 +83,34 @@ class PickAndPlaceMove(Move):
 
         if fabric:
             if self.extra_fabric_position is None:
-                print("Warning: You have to define fabric position in this move!")
+                pass
+                #print("Warning: You have to define fabric position in this move!")
             else:
                 if state.current_board.board[self.extra_fabric_position] == 1:
+                    print(self.position)
+                    print(self.piece.layout)
+                    print(self.extra_fabric_position)
+                    state.current_board.show()
                     raise ValueError("Cant put fabric here")
                 extra_x, extra_y = self.extra_fabric_position
                 state.current_board.board[extra_x, extra_y] = 1
+
+        if np.sum(state.current_board.board) >= 49 and not state.p1board.has_bonus and not state.p2board.has_bonus:
+            windows = view_as_windows(board.board, BONUS_ARRAY.shape)
+            if (windows == BONUS_ARRAY).all(axis=(2,3)).any():
+                state.current_board.has_bonus = True
 
     def verify(self, state: State) -> bool:
         board = state.current_board
         if board.buttons < self.piece.price:
             print("biedak")
             return False
+        layout = self.piece.layout
 
-        layout = np.rot90(self.piece.layout, k=-self.rotation)
+        if self.flip:
+            layout = np.flip(layout)
+
+        layout = np.rot90(layout, k=-self.rotation)
 
         x, y = self.position
         width, height = layout.shape
@@ -114,6 +136,9 @@ class PickAndPlaceMove(Move):
             for j_layout, j in enumerate(range(y, down_boundary)):
                 if layout[i_layout, j_layout] == 1:
                     if board.board[i, j] == 1:
+                        print(x, y)
+                        print(layout)
+                        print(board.board)
                         print("overlap")
                         return False
 
@@ -144,6 +169,7 @@ class JumpMove(Move):
 
             # perform jump
             state.map.player2_offset = other_players_offset+1
+        self.collect_bonuses(state, my_offset, other_players_offset+1)
 
     def verify(self, state: State) -> bool:
         return True

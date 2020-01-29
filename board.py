@@ -8,6 +8,7 @@ class Board:
         self.board = np.zeros((self.size, self.size))
         self.buttons = STARTING_BUTTONS
         self.buttons_on_board = 0
+        self.has_bonus = False
 
     def show(self):
         print(self.board)
@@ -17,7 +18,8 @@ class Board:
             "size": self.size,
             "board": self.board.tolist(),
             "buttons": self.buttons,
-            "buttons_on_board": self.buttons_on_board
+            "buttons_on_board": self.buttons_on_board,
+            "has_bonus": self.has_bonus
         }
 
     def copy(self):
@@ -26,5 +28,6 @@ class Board:
         new_b.board = np.copy(self.board)
         new_b.buttons_on_board = self.buttons_on_board
         new_b.buttons = self.buttons
+        new_b.has_bonus = self.has_bonus
 
         return new_b

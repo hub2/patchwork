@@ -15,6 +15,13 @@ class State:
             return self.current_board
         return player
 
+    @property
+    def current_player_offset(self):
+        if self.current_board == self.p1board:
+            return self.map.player1_offset
+        else:
+            return self.map.player2_offset
+
     def apply(self, move: "Move"):
         return move.apply(self)
 

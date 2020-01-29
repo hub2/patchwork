@@ -13,7 +13,8 @@ class Piece:
         self.layout = np.zeros((width, height))
         for i in range(width):
             for j in range(height):
-                self.layout[i, j] = 1
+                if layout[j][i] == "#":
+                    self.layout[i, j] = 1
 
     def to_dict(self):
         return {

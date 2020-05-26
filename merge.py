@@ -7,21 +7,18 @@ import numpy as np
 imgs = []
 button = Image.open("imgs/button_48x48.png")
 
-for img_filename in glob("imgs/in/tile*"):
+for img_filename in glob("imgs/in/*.jpg"):
     img = Image.open(img_filename)
     imgs.append(img)
 
-print(imgs)
 
-for piece in pieces_types:
+for idd, piece in enumerate(pieces_types):
     layout = piece.layout
 
     w, h = layout.shape
     img_w, img_h = imgs[0].width, imgs[0].height
 
     dst = Image.new("RGBA", (img_w * w, img_h * h), color=(255,255,255, 0))
-
-    random.shuffle(imgs)
 
     number_of_fields = np.count_nonzero(layout == 1)
     buttons_left = piece.buttons
@@ -31,11 +28,12 @@ for piece in pieces_types:
 
     indices_chosen = indices[:buttons_left]
 
+    chosen_image = imgs[idd]
+
     for i in range(w):
         for j in range(h):
             if layout[i, j] == 1:
                 idx = i+j*w
-                chosen_image = imgs[idx % len(imgs)]
 
                 dst_coords = (i*img_w, j*img_h)
                 dst.paste(chosen_image, dst_coords)

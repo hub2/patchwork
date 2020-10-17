@@ -1,5 +1,6 @@
 var fieldSize = 100;
 var boardSize = 9;
+
 function setup() {
     console.log(displayWidth);
     console.log(displayHeight);
@@ -9,6 +10,7 @@ function setup() {
     //strokeWeight(4);
     //rect(0,0, displayWidth, displayHeight);
 
+    console.log(piecesObjects);
     setupNewGame();
 }
 
@@ -27,6 +29,7 @@ function setupNewGame()
     drawMap();
     drawPlayerBoard();
     drawOpponentBoard();
+    drawAvailablePieces();
 }
 
 var randomColors = ['#6D213C', '#946846', '#BAAB68', '#e3c16f', '#faff70'];
@@ -176,4 +179,14 @@ function drawOpponentBoard(player){
     for(let i=0;i<opponentBoardFields.length;i++){
         opponentBoardFields[i].draw();
     }
+}
+
+
+function drawAvailablePieces(){
+    var x = fieldSize*8;
+    var y = fieldSize*1.5;
+    var size = fieldSize*0.3;
+    piecesObjects[0].draw(x, y, size, 1, 1);
+
+    
 }

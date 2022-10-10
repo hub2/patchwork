@@ -40,9 +40,13 @@ def available_moves(state: State) -> List[Move]:
                         layout = np.flip(layout)
 
                     layout = np.rot90(layout, k=-rotation)
+                    abort = False
                     for l in layouts:
                         if np.array_equal(l, layout):
-                            continue
+                            abort = True
+                            break
+                    if abort:
+                        continue
 
                     for x in range(state.current_board.size - layout.shape[0] + 1):
                         for y in range(state.current_board.size - layout.shape[1] + 1):
